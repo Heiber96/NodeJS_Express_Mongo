@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Heiber96/NodeJS_Express_Mongo/issues"
   },
-  "homepage": "https://github.com/Heiber96/NodeJS_Express_Mongo#readme"
+  "homepage": "https://github.com/Heiber96/NodeJS_Express_Mongo#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
