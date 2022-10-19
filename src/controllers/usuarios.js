@@ -5,7 +5,16 @@ const Joi = require("@hapi/joi");
 const { func } = require("@hapi/joi");
 
 ruta.get("/", (req, res) => {
-  res.json("Respuesta a peticion GET de USUARIOS funcionando correctamente...");
+  let resultado = listarUsuariosActivos();
+  resultado.then(usuarios =>{
+    res.json(usuarios)
+  }).catch(err =>{
+    res.status(400).json(
+      {
+        err
+      }
+    )
+  })
 });
 
 //validaciones
@@ -129,3 +138,9 @@ ruta.delete('/:email', (req, res) => {
 });
 
 module.exports = ruta;
+
+//funcion async para listar tipo get
+async function listarUsuariosActivos(){
+  let usuarios = await Usuario.find({"estado": true});
+  return usuarios;
+}
