@@ -2,12 +2,11 @@ const express = require("express");
 const Usuario = require("../models/usuario_model");
 const ruta = express.Router();
 const Joi = require("@hapi/joi");
+const { func } = require("@hapi/joi");
 
 ruta.get("/", (req, res) => {
   res.json("Respuesta a peticion GET de USUARIOS funcionando correctamente...");
 });
-
-module.exports = ruta;
 
 //validaciones
 const schema = Joi.object({
@@ -17,12 +16,11 @@ const schema = Joi.object({
     .required()
     .pattern(/^[A-Za-záéíóú ]{3,30}$/),
 
-  password: Joi.string()
-      .pattern(/^[a-zA-Z0-9]{3,30}$/),
+  password: Joi.string().pattern(/^[a-zA-Z0-9]{3,30}$/),
 
   email: Joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ["com", "net", "edu", "co"] }
+    tlds: { allow: ["com", "net", "edu", "co"] },
   }),
 });
 
@@ -68,7 +66,7 @@ async function crearUsuario(body) {
 //FUNCION ACTUALIZAR USUARIO
 async function actualizarUsuario(email, body) {
   let usuario = await Usuario.findOneAndUpdate(
-    { "email": email },
+    { email: email },
     {
       $set: {
         nombre: body.nombre,
@@ -81,22 +79,53 @@ async function actualizarUsuario(email, body) {
 }
 
 //endpoint de tipo PUT para actualizar usuario
-ruta.put('/:email' , (req, res) => {
-  const {error,value} = schema.validate({nombre: req.body.nombre});
-  if(!error){
+ruta.put("/:email", (req, res) => {
+  const { error, value } = schema.validate({ nombre: req.body.nombre });
+  if (!error) {
     let resultado = actualizarUsuario(req.params.email, req.body);
-    resultado.then(valor => {
+    resultado
+      .then((valor) => {
+        res.json({
+          valor,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          err,
+        });
+      });
+  } else {
+    res.status(400).json({
+      error,
+    });
+  }
+});
+//funcion para "DELETE" DESACTIVAR USUARIO
+async function desactivarUsuario(email) {
+  let usuario = await Usuario.findOneAndUpdate(
+    { "email": email },
+    {
+      $set: {
+        estado: false,
+      },
+    },
+    { new: true }
+  );
+  return usuario;
+}
+
+//endpoint de tipo DELETE para recurso  Usuario Controller
+ruta.delete('/:email', (req, res) => {
+  let resultado = desactivarUsuario(req.params.email);
+  resultado.then(valor => {
       res.json({
-        valor 
+        usuario: valor
       })
     }).catch(err => {
       res.status(400).json({
         err
       })
     });
-  }else{
-    res.status(400).json({
-      error
-    })
-  }
-})
+});
+
+module.exports = ruta;
