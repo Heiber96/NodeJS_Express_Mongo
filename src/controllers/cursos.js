@@ -35,4 +35,25 @@ ruta.post('/' , (req, res) => {
     })
 });
 
+//funcion async Actualizar tipo PUT
+async function actualizarCurso (id, body){
+    let curso = await Curso.findByIdAndUpdate(id,{
+        $set: {
+            titulo: body.titulo,
+            descripcion: body.descripcion
+        }
+    },{new: true});
+    return curso; 
+}
+
+//endpoint tipo PUT para actualizar base datos CURSOS
+ruta.put('/:id',(req , res) => {
+    let resultado = actualizarCurso(req.params.id, req.body);
+    resultado.then(curso => {
+        res.json(curso)
+    }).catch(err => {
+        res.status(400).json(err)
+    })
+})
+
 module.exports = ruta;
