@@ -4,8 +4,20 @@ const Joi = require("@hapi/joi");
 const ruta = express.Router();
 
 
+
+//funcion async tipo get para traer listado de activos
+async function listarCursosActivos(){
+    let cursos = await Curso.find({"estado" : true});
+    return cursos;
+}
+
 ruta.get('/',(req,res)=>{
-    res.json('Respuesta a peticion GET de CURSOS funcionando correctamente...');
+    let resultado = listarCursosActivos();
+    resultado.then(cursos => {
+        res.json(cursos);
+    }).catch(err => {
+        res.status(400).json(err);
+    })
 
 });
 
@@ -75,5 +87,7 @@ ruta.delete('/:id' , (req, res) => {
         res.status(400).json(err);
     })
 })
+
+
 
 module.exports = ruta;
