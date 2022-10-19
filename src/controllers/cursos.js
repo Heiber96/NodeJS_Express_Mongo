@@ -56,4 +56,24 @@ ruta.put('/:id',(req , res) => {
     })
 })
 
+//funcion async  para inactivar  cursos
+async function desactivarCurso(id){
+    let curso = await Curso.findByIdAndUpdate(id, {
+        $set: {
+            estado: false 
+        }
+    }, {new: true});
+    return curso;
+}
+
+//endpoint de tipo DELETE  Para cursos "inactivar estado"
+ruta.delete('/:id' , (req, res) => {
+    let resultado = desactivarCurso(req.params.id);
+    resultado.then(curso => {
+        res.json(curso);
+    }).catch(err => {
+        res.status(400).json(err);
+    })
+})
+
 module.exports = ruta;
