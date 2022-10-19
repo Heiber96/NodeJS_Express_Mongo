@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
-const cursoShema = new mongosee.cursoShema({
+const cursoSchema = new mongoose.Schema({
     titulo: {
         type:String,
         required: true
     },
-    descipcion:{
+    descripcion:{
         type:String,
         required:false
     },
     estado:{
         type:Boolean,
-        required:true
+        default:true
     },
     imagen:{
         type:String,
@@ -19,12 +19,12 @@ const cursoShema = new mongosee.cursoShema({
     },
     alumnos:{
         type:Number,
-        required:0
+        default:0
     },
     calificacion:{
         type:Number,
-        required:0
-    },
+        default:0
+    }
 });
 
-module.exports = mongoose.model('Curso' , cursoShema);
+module.exports = mongoose.model('Curso' , cursoSchema);
